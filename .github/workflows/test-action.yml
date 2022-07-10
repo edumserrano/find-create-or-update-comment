@@ -1,13 +1,15 @@
 name: Test GitHub action
 
 on:
-  workflow_run:
-    workflows: [
-      "Markdown Link Check with errors",
-      "Markdown Link Check without errors",
-    ]
-    types:
-    - completed
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
 defaults:
   run:
