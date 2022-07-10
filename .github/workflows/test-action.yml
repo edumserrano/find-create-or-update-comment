@@ -1,0 +1,73 @@
+name: Test GitHub action
+
+on:
+  workflow_run:
+    workflows: [
+      "Markdown Link Check with errors",
+      "Markdown Link Check without errors",
+    ]
+    types:
+    - completed
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  default-args:
+    name: Default args
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions/checkout@v3
+    - name: Get current date
+      id: get-date
+      run: |
+        $date = Get-Date
+        Write-Output "::set-output name=date::$date"
+    - name: Run action
+      uses: ./
+      with:
+        issue-number: 1
+        body-includes: '<!-- test-issue -->'
+        body: |
+          '<!-- test-issue -->'
+          This comment was last updated on ${{ steps.get-date.outputs.date }}
+        edit-mode: replace
+
+  # test-failure:
+  #   name: test failure
+  #   permissions:
+  #     contents: read
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Dump github context for debug purposes
+  #     env:
+  #       GITHUB_CONTEXT: ${{ toJSON(github) }}
+  #     run: $env:GITHUB_CONTEXT
+  #   - uses: actions/checkout@v3
+  #   - name: Run markdown link check log parser with bad input
+  #     id: mlc-log-parser-bad-input
+  #     uses: ./
+  #     continue-on-error: true
+  #     with:
+  #       auth-token:  '${{ secrets.GITHUB_TOKEN }}'
+  #       repo: '${{ github.repository }}'
+  #       run-id: '1' # invalid run id
+  #       job-name: 'Run Markdown Link Check'
+  #       step-name: 'Markdown Link Check'
+  #   - name: The action should fail the step if it encounters an error
+  #     run: |
+  #       $errorOutcome = '${{ steps.mlc-log-parser-bad-input.outcome }}'
+  #       if($errorOutcome -eq 'success') {
+  #         Write-Output "::error title=Action check:Action should have failed the workflow because of invalid input but it didn't."
+  #         Exit 1
+  #       }
+  #       else {
+  #         Write-Output "::notice title=Action check::Action would have failed the workflow given invalid input. You should see an error message on the action's Annotations."
+  #       }
