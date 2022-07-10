@@ -39,7 +39,7 @@ jobs:
         issue-number: 1
         body-includes: '<!-- test-issue -->'
         body: |
-          '<!-- test-issue -->'
+          <!-- test-issue -->
           This comment was last updated on ${{ steps.get-date.outputs.date }}
         edit-mode: replace
 
