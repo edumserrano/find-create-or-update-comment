@@ -32,7 +32,7 @@ This is a implementation of what is described in [the docs for create-or-update-
     issue-number: ${{ github.event.pull_request.number }}
     body-includes: '<!-- pr-test-results -->'
     comment-author: 'github-actions[bot]'
-    body: |
+    body: | # can be a single value or you can compose text with multi-line values
       <!-- pr-test-results -->
       ${{ steps.test-results.outputs.results }}
     edit-mode: replace
@@ -53,7 +53,8 @@ This is a implementation of what is described in [the docs for create-or-update-
 
 ## Tips
 
-TODO
+- In your issue or pull request comment, you can include a piece of text that is a comment and therefore **is not rendered** by using the HTML tag comment syntax: `<!-- this is a comment -->`. Then you can use that HTML comment tag as an identifier for the comment you want to find and update.
+  - The idea is that the HTML tag comment you choose will serve as unique identifier for the comment you want to find and update. This is a much better way to be sure that you will not get a false positive by searching for a non-comment piece of text.
 
 ## Dev notes
 
