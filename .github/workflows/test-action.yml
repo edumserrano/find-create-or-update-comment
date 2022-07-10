@@ -37,40 +37,75 @@ jobs:
       uses: ./
       with:
         issue-number: 1
-        body-includes: '<!-- test-issue -->'
+        body-includes: '<!-- test-issue-default-args -->'
         body: |
-          <!-- test-issue -->
+          <!-- test-issue-default-args -->
+          From default args job
           This comment was last updated on ${{ steps.get-date.outputs.date }}
         edit-mode: replace
 
-  # test-failure:
-  #   name: test failure
-  #   permissions:
-  #     contents: read
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Dump github context for debug purposes
-  #     env:
-  #       GITHUB_CONTEXT: ${{ toJSON(github) }}
-  #     run: $env:GITHUB_CONTEXT
-  #   - uses: actions/checkout@v3
-  #   - name: Run markdown link check log parser with bad input
-  #     id: mlc-log-parser-bad-input
-  #     uses: ./
-  #     continue-on-error: true
-  #     with:
-  #       auth-token:  '${{ secrets.GITHUB_TOKEN }}'
-  #       repo: '${{ github.repository }}'
-  #       run-id: '1' # invalid run id
-  #       job-name: 'Run Markdown Link Check'
-  #       step-name: 'Markdown Link Check'
-  #   - name: The action should fail the step if it encounters an error
-  #     run: |
-  #       $errorOutcome = '${{ steps.mlc-log-parser-bad-input.outcome }}'
-  #       if($errorOutcome -eq 'success') {
-  #         Write-Output "::error title=Action check:Action should have failed the workflow because of invalid input but it didn't."
-  #         Exit 1
-  #       }
-  #       else {
-  #         Write-Output "::notice title=Action check::Action would have failed the workflow given invalid input. You should see an error message on the action's Annotations."
-  #       }
+  no-default-args:
+    name: Non default args
+    permissions:
+      pull-requests: write
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions/checkout@v3
+    - name: Get current date
+      id: get-date
+      run: |
+        $date = Get-Date
+        Write-Output "::set-output name=date::$date"
+    - name: Run action
+      uses: ./
+      with:
+        token: ${{ github.token }}
+        repository: ${{ github.repository }}
+        issue-number: 1
+        body-includes: '<!-- test-issue-non-default-args -->'
+        comment-author: github-actions[bot]
+        body: |
+          <!-- test-issue-non-default-args -->
+          From non default args job
+          This comment was last updated on ${{ steps.get-date.outputs.date }}
+        edit-mode: replace
+        reactions: rocket,+1,heart
+
+  test-failure:
+    name: test failure
+    permissions:
+      pull-requests: write
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions/checkout@v3
+    - name: Run action
+      uses: ./
+      id: action-bad-input
+      continue-on-error: true
+      with:
+        issue-number: 999
+        body-includes: '<!-- test-issue-failure -->'
+        body: |
+          <!-- test-issue-failure -->
+          From test failure job
+        edit-mode: replace
+    - name: The action should fail the step if it encounters an error
+      run: |
+        $errorOutcome = '${{ steps.action-bad-input.outcome }}'
+        if($errorOutcome -eq 'success') {
+          Write-Output "::error title=Action check:Action should have failed the workflow because of invalid input but it didn't."
+          Exit 1
+        }
+        else {
+          Write-Output "::notice title=Action check::Action would have failed the workflow given invalid input. You should see an error message on the action's Annotations."
+        }
