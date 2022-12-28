@@ -38,7 +38,7 @@ runs:
   using: "composite"
   steps:
     - name: Find Comment
-      uses: peter-evans/find-comment@v1.3.0
+      uses: peter-evans/find-comment@v2.2.0
       id: find-comment
       with:
         token: ${{ inputs.token }}
@@ -47,7 +47,7 @@ runs:
         body-includes: ${{ inputs.body-includes }}
         comment-author: ${{ inputs.comment-author }}
     - name: Create comment
-      uses: peter-evans/create-or-update-comment@v1.4.5
+      uses: peter-evans/create-or-update-comment@v2.1.0
       if:   steps.find-comment.outputs.comment-id == 0
       with:
         token: ${{ inputs.token }}
@@ -56,7 +56,7 @@ runs:
         body: ${{ inputs.body }}
         reactions: ${{ inputs.reactions }}
     - name: Update comment
-      uses: peter-evans/create-or-update-comment@v1.4.5
+      uses: peter-evans/create-or-update-comment@v2.1.0
       if:   steps.find-comment.outputs.comment-id != 0
       with:
         token: ${{ inputs.token }}
