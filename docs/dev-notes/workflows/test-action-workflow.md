@@ -7,4 +7,3 @@
 - Runs on a schedule to make sure the action is working as expected.
 - Updates the [Workflow test issue](https://github.com/edumserrano/find-create-or-update-comment/issues/1).
 - Checks that action should fail the workflow if the action fails.
-

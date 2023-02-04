@@ -1,0 +1,109 @@
+name: Test GitHub action from GH Marketplace
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
+  schedule:
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  default-args:
+    name: Default args
+    permissions:
+      pull-requests: write
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions/checkout@v3
+    - name: Get current date
+      id: get-date
+      run: |
+        $date = Get-Date
+        Write-Output "::set-output name=date::$date"
+    - name: Run action
+      uses: edumserrano/find-create-or-update-comment@v1
+      with:
+        issue-number: 1
+        body-includes: '<!-- test-issue-default-args -->'
+        body: |
+          <!-- test-issue-default-args -->
+          From default args job
+          This comment was last updated on ${{ steps.get-date.outputs.date }}
+        edit-mode: replace
+
+  no-default-args:
+    name: Non default args
+    permissions:
+      pull-requests: write
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions/checkout@v3
+    - name: Get current date
+      id: get-date
+      run: |
+        $date = Get-Date
+        Write-Output "::set-output name=date::$date"
+    - name: Run action
+      uses: edumserrano/find-create-or-update-comment@v1
+      with:
+        token: ${{ github.token }}
+        repository: ${{ github.repository }}
+        issue-number: 1
+        body-includes: '<!-- test-issue-non-default-args -->'
+        comment-author: github-actions[bot]
+        body: |
+          <!-- test-issue-non-default-args -->
+          From non default args job
+          This comment was last updated on ${{ steps.get-date.outputs.date }}
+        edit-mode: replace
+        reactions: rocket,+1,heart
+
+  test-failure:
+    name: test failure
+    permissions:
+      pull-requests: write
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions/checkout@v3
+    - name: Run action
+      uses: edumserrano/find-create-or-update-comment@v1
+      id: action-bad-input
+      continue-on-error: true
+      with:
+        issue-number: 999
+        body-includes: '<!-- test-issue-failure -->'
+        body: |
+          <!-- test-issue-failure -->
+          From test failure job
+        edit-mode: replace
+    - name: The action should fail the step if it encounters an error
+      run: |
+        $errorOutcome = '${{ steps.action-bad-input.outcome }}'
+        if($errorOutcome -eq 'success') {
+          Write-Output "::error title=Action check:Action should have failed the workflow because of invalid input but it didn't."
+          Exit 1
+        }
+        else {
+          Write-Output "::notice title=Action check::Action would have failed the workflow given invalid input. You should see an error message on the action's Annotations."
+        }
