@@ -10,6 +10,12 @@ For more information about the GitHub workflows configured for this repo go [her
 
 ## GitHub marketplace
 
-This action is published to the [GitHub marketplace](https://github.com/marketplace/actions/nuget-push). See here for more information on [how to publish or remove an action from the marketplace](https://docs.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace).
+This action is published to the [GitHub marketplace](https://github.com/marketplace/actions/nuget-push).
 
-**Currently there is no workflow setup to publish this action to the marketplace. The publishing act is a manual process following the instructions above.**
+**Currently there is no workflow setup to publish this action to the marketplace. The publishing act is a manual process following the instructions below.**
+
+When publishing a new version:
+
+- create a new tag for the release and update the latest major tag to the same commit as the new tag.
+
+From here on you can follow the instruction at [how to publish or remove an action from the marketplace](https://docs.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace).
