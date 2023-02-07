@@ -32,7 +32,7 @@ jobs:
       id: get-date
       run: |
         $date = Get-Date
-        Write-Output "::set-output name=date::$date"
+        Write-Output "date=$date" >> $env:GITHUB_OUTPUT
     - name: Run action
       uses: ./
       with:
@@ -60,7 +60,7 @@ jobs:
       id: get-date
       run: |
         $date = Get-Date
-        Write-Output "::set-output name=date::$date"
+        Write-Output "date=$date" >> $env:GITHUB_OUTPUT
     - name: Run action
       uses: ./
       with:
