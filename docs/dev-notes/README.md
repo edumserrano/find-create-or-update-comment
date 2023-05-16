@@ -16,6 +16,6 @@ This action is published to the [GitHub marketplace](https://github.com/marketpl
 
 When publishing a new version:
 
-- create a new tag for the release and update the latest major tag to the same commit as the new tag.
+- create a new tag (like v1.0.4) for the release and update the latest major tag (like v1) to the same commit as the new tag.
 
 From here on you can follow the instruction at [how to publish or remove an action from the marketplace](https://docs.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace).
