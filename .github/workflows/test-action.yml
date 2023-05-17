@@ -77,7 +77,7 @@ jobs:
         reactions: rocket,+1,heart
 
   test-failure:
-    name: test failure
+    name: Test failure
     permissions:
       pull-requests: write
       issues: write
