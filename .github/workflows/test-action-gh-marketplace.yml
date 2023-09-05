@@ -25,7 +25,7 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Get current date
       id: get-date
       run: |
@@ -53,7 +53,7 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Get current date
       id: get-date
       run: |
@@ -85,7 +85,7 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Run action
       uses: edumserrano/find-create-or-update-comment@v1
       id: action-bad-input
