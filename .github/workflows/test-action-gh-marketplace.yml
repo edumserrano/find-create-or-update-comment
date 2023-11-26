@@ -32,7 +32,7 @@ jobs:
         $date = Get-Date
         Write-Output "date=$date" >> $env:GITHUB_OUTPUT
     - name: Run action
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         issue-number: 1
         body-includes: '<!-- test-issue-default-args -->'
@@ -60,7 +60,7 @@ jobs:
         $date = Get-Date
         Write-Output "date=$date" >> $env:GITHUB_OUTPUT
     - name: Run action
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         token: ${{ github.token }}
         repository: ${{ github.repository }}
@@ -87,7 +87,7 @@ jobs:
       run: $env:GITHUB_CONTEXT
     - uses: actions/checkout@v4
     - name: Run action
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       id: action-bad-input
       continue-on-error: true
       with:

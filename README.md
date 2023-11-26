@@ -28,7 +28,7 @@ This is a implementation of what is described in [the docs for create-or-update-
 
 ```yml
 - name: Update PR with test results
-  uses: edumserrano/find-create-or-update-comment@v1
+  uses: edumserrano/find-create-or-update-comment@v2
   with:
     issue-number: ${{ github.event.pull_request.number }}
     body-includes: '<!-- some-unique-id -->'
