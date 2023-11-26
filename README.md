@@ -12,7 +12,6 @@
 - [Why should you use this action ?](#why-should-you-use-this-action-)
 - [Usage](#usage)
 - [Action inputs](#action-inputs)
-- [Tips](#tips)
 - [Dev notes](#dev-notes)
 
 ## Description
@@ -32,31 +31,46 @@ This is a implementation of what is described in [the docs for create-or-update-
   uses: edumserrano/find-create-or-update-comment@v1
   with:
     issue-number: ${{ github.event.pull_request.number }}
-    body-includes: '<!-- pr-test-results -->'
+    body-includes: '<!-- some-unique-id -->'
     comment-author: 'github-actions[bot]'
     body: | # can be a single value or you can compose text with multi-line values
-      <!-- pr-test-results -->
-      ${{ steps.test-results.outputs.results }}
+      <!-- some-unique-id -->
+      My awesome comment
     edit-mode: replace
 ```
 
+The above usage example is using a trick to uniquely identify a comment with some text.
+
+The GitHub comment contains a markdown comment using the `<!-- this is a comment -->` syntax. The markdown comment text should then be a unique identifier that we can use to search for. This way we can set unique ids for the comments but don't make them visible to the user/whoever is reading the comment on GitHub.
+
+Also note that you can pass input from other steps into the `body` param by doing something like:
+
+```yml
+body: |
+  <!-- some-unique-id -->
+  ${{ steps.some-step-id.outputs.some-step-output }}
+```
+
+Alternatively to using an inline `body` you can use the `body-path` to specify a file to use.
+
 ## Action inputs
 
-| Name             | Description                                                                                                       | Required | Default value                            |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------- |
-| `token`          | GITHUB_TOKEN or a repo scoped PAT.                                                                                | yes      | `github.token` (job token)               |
-| `repository`     | The full name of the repository containing the issue or pull request where to find, create or update the comment. | yes      | `github.repository` (current repository) |
-| `issue-number`   | The number of the issue or pull request in which to find, create or update the comment.                           | yes      | -                                        |
-| `body-includes`  | A string to search for in the body of comments.                                                                   | yes      | -                                        |
-| `comment-author` | The GitHub user name of the comment author.                                                                       | false    | -                                        |
-| `body`           | The comment body.                                                                                                 | yes      | -                                        |
-| `edit-mode`      | The mode when updating a comment, replace or append.                                                              | yes      | -                                        |
-| `reactions`      | A comma separated list of reactions to add to the comment (+1, -1, laugh, confused, heart, hooray, rocket, eyes). | false    | -                                        |
-
-## Tips
-
-- In your issue or pull request comment, you can include a piece of text that is a comment and therefore **is not rendered** by using the HTML tag comment syntax: `<!-- this is a comment -->`. Then you can use that HTML comment tag as an identifier for the comment you want to find and update.
-  - The idea is that the HTML tag comment you choose will serve as unique identifier for the comment you want to find and update. This is a much better way to be sure that you will not get a false positive by searching for a non-comment piece of text.
+| Name                  | Description                                                                                                                       | Required                             | Default value                            |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ---------------------------------------- |
+| `token`               | GITHUB_TOKEN or a repo scoped PAT.                                                                                                | yes                                  | `github.token` (job token)               |
+| `repository`          | The full name of the repository containing the issue or pull request where to find, create or update the comment.                 | yes                                  | `github.repository` (current repository) |
+| `issue-number`        | The number of the issue or pull request in which to find, create or update the comment.                                           | yes                                  | -                                        |
+| `body-includes`       | A string to search for in the body of comments. Cannot be used in conjunction with `body-regex`.                                  | yes, unless `body-regex` is used.    | -                                        |
+| `body-regex`          | A regular expression to search for in the body of comments. Cannot be used in conjunction with `body-includes`.                   | yes, unless `body-includes` is used. | -                                        |
+| `direction`           | Search direction, specified as `first` or `last`                                                                                  | no                                   | `first`                                  |
+| `nth`                 | 0-indexed number, specifying which comment to update if multiple are found .                                                      | no                                   | 0                                        |
+| `comment-author`      | The GitHub user name of the comment author.                                                                                       | false                                | -                                        |
+| `body`                | The comment body. Cannot be used in conjunction with `body-path`.                                                                 | yes, unless `body-path` is used.     | -                                        |
+| `body-path`           | The path to a file containing the comment body. Cannot be used in conjunction with `body`.                                        | yes, unless `body` is used.          | -                                        |
+| `edit-mode`           | The mode when updating a comment, `replace` or `append`.                                                                          | false                                | `append`                                 |
+| `append-separator`    | The separator to use when appending to an existing comment. (`newline`, `space`, `none`).                                         | false                                | `newline`                                |
+| `reactions`           | A comma separated list of reactions to add to the comment (`+1`, `-1`, `laugh`, `confused`, `heart`, `hooray`, `rocket`, `eyes`). | false                                | -                                        |
+| `reactions-edit-mode` | The mode when updating comment reactions, `replace` or `append`.                                                                  | false                                | `append`                                 |
 
 ## Dev notes
 
