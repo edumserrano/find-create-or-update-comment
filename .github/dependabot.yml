@@ -13,3 +13,7 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'github-workflows'
+    groups:
+      github-actions:
+        patterns:
+          - "*"
