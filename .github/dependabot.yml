@@ -8,7 +8,8 @@ updates:
     # default location of `.github/workflows`
     directory: '/'
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
     labels:
       - 'dependabot'
       - 'bot:robot:'
