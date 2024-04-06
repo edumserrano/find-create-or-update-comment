@@ -61,7 +61,7 @@ runs:
   using: "composite"
   steps:
     - name: Find Comment
-      uses: peter-evans/find-comment@v3.0.0
+      uses: peter-evans/find-comment@v3.1.0
       id: find-comment
       with:
         token: ${{ inputs.token }}
